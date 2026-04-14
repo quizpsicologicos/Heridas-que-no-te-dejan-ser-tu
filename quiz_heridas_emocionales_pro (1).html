@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test de Heridas Emocionales</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+.container {
+  max-width: 520px;
+  margin: auto;
+  background: rgba(0,0,0,0.35);
+  padding: 20px;
+  border-radius: 20px;
+}
+.question { margin: 20px 0; }
+button {
+  display: block;
+  width: 100%;
+  margin: 6px 0;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:hover { opacity: 0.85; }
+.result { margin-top: 20px; font-size: 15px; text-align:left; line-height:1.5; }
+hr { border: 0; height: 1px; background: rgba(255,255,255,0.2); margin: 15px 0; }
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>🧠 Test de Heridas Emocionales</h2>
+<p>Descubre tu herida emocional principal y cómo trabajarla</p>
+<div id="quiz"></div>
+<div class="result" id="resultado"></div>
+</div>
+
+<script>
+const preguntas = [
+"Cuando alguien importante se aleja de ti, ¿qué es lo primero que sientes?",
+"En tus relaciones cercanas, ¿cómo sueles actuar la mayoría del tiempo?",
+"¿Qué tipo de situación te duele más emocionalmente?",
+"Si piensas en tu infancia, ¿qué sensación era más común en ti?",
+"¿Cuál de estos miedos sientes más fuerte en el fondo?",
+"Cuando alguien te lastima, ¿cómo reaccionas normalmente?",
+"Cuando hay un conflicto con alguien, ¿qué tiendes a hacer?",
+"¿Cómo crees que las personas suelen percibirte?",
+"En el fondo, ¿qué es lo que más necesitas de los demás?",
+"Cuando algo sale mal en tu vida, ¿qué pensamiento aparece primero?"
+];
+
+const respuestasTexto = [
+["No soy suficiente","Me van a dejar","Me avergüenzo","Me traicionaron","Es injusto"],
+["Me alejo","Me apego","Complazco","Controlo","Exijo"],
+["No ser tomado en cuenta","Abandono","Humillación","Mentiras","Injusticia"],
+["No encajaba","Soledad","Vergüenza","Desconfianza","Exigencia"],
+["Rechazo","Soledad","Inferioridad","Traición","No ser perfecto"],
+["Me aíslas","Busco compañía","Me culpo","Me enojo","Me enfrío"],
+["Evito","Me aferro","Me someto","Controlo","Me cierro"],
+["Reservado","Dependiente","Servicial","Dominante","Frío"],
+["Aceptación","Atención","Reconocimiento","Lealtad","Justicia"],
+["No valgo","Me dejarán","Es mi culpa","Me fallaron","No es justo"]
+];
+
+const letras = ["A","B","C","D","E"];
+const heridas = { A:"Rechazo", B:"Abandono", C:"Humillación", D:"Traición", E:"Injusticia" };
+
+let index = 0;
+let respuestas = [];
+
+function render(){
+  if(index >= preguntas.length){ mostrarResultado(); return; }
+  let html = `<h3>${index+1}. ${preguntas[index]}</h3>`;
+  respuestasTexto[index].forEach((texto, i)=>{
+    html += `<button onclick="select('${letras[i]}')">${texto}</button>`;
+  });
+  document.getElementById("quiz").innerHTML = html;
+}
+
+function select(val){ respuestas.push(val); index++; render(); }
+
+function mostrarResultado(){
+  let conteo = {A:0,B:0,C:0,D:0,E:0};
+  respuestas.forEach(r=>conteo[r]++);
+  let orden = Object.entries(conteo).sort((a,b)=>b[1]-a[1]);
+
+  let principal = heridas[orden[0][0]];
+  let secundaria = heridas[orden[1][0]];
+
+  const perfiles = {
+    "Humillación":{
+      desc:"Tiendes a ponerte en segundo lugar y a sentir culpa con facilidad. Buscas valor a través de ayudar o complacer.",
+      raiz:"Vergüenza interna y necesidad de aprobación.",
+      fort:"Empatía, servicio y conexión emocional.",
+      riesgo:"Autosacrificio, culpa excesiva y desgaste emocional.",
+      sanar:[
+        "Aprende a decir 'no' sin justificarte.",
+        "Haz algo diario solo para ti.",
+        "Cuestiona la culpa automática: ¿realmente es tu responsabilidad?"
+      ]
+    },
+    "Rechazo":{
+      desc:"Tiendes a cerrarte o alejarte por miedo a no ser suficiente o a no ser aceptado.",
+      raiz:"Sensación de no encajar o no valer.",
+      fort:"Independencia, introspección y sensibilidad.",
+      riesgo:"Aislamiento, evitar oportunidades y miedo a exponerte.",
+      sanar:[
+        "Exprésate aunque no sea perfecto.",
+        "Haz pequeñas acciones donde te muestres.",
+        "Recuerda: tu valor no depende de la aprobación externa."
+      ]
+    },
+    "Abandono":{
+      desc:"Buscas conexión constante y puedes depender emocionalmente.",
+      raiz:"Miedo a estar solo.",
+      fort:"Capacidad de amar y conectar profundamente.",
+      riesgo:"Dependencia emocional.",
+      sanar:["Aprende a estar contigo mismo","Fortalece tu independencia emocional"]
+    },
+    "Traición":{
+      desc:"Buscas control y te cuesta confiar plenamente.",
+      raiz:"Miedo a ser fallado.",
+      fort:"Liderazgo y determinación.",
+      riesgo:"Rigidez y desconfianza.",
+      sanar:["Suelta control poco a poco","Aprende a delegar"]
+    },
+    "Injusticia":{
+      desc:"Eres exigente y buscas perfección.",
+      raiz:"Represión emocional y exigencia.",
+      fort:"Disciplina y orden.",
+      riesgo:"Estrés y rigidez emocional.",
+      sanar:["Permítete fallar","Conecta con tus emociones"]
+    }
+  };
+
+  let p = perfiles[principal];
+  let s = perfiles[secundaria];
+
+  let combinacion = `Tu patrón principal es: dar mucho, sentirte responsable y luego cerrarte emocionalmente. Esto mezcla ${principal.toLowerCase()} + ${secundaria.toLowerCase()}, generando desgaste interno y dificultad para equilibrar dar y recibir.`;
+
+  let plan = `
+  <strong>Plan personalizado para ti:</strong><br>
+  1. Antes de decir sí, pregúntate: ¿lo hago por gusto o por miedo?<br>
+  2. Acepta recibir (cumplidos, ayuda) sin justificarte.<br>
+  3. Exprésate aunque se sienta incómodo.<br>
+  4. Marca al menos 1 límite diario.<br>
+  5. Recuerda: no necesitas sacrificarte para valer.
+  `;
+
+  document.getElementById("quiz").innerHTML = "";
+
+  document.getElementById("resultado").innerHTML = `
+  <h3>🧠 Perfil Completo</h3>
+
+  <strong>Herida principal: ${principal}</strong><br>
+  ${p.desc}<br>
+  <em>Raíz:</em> ${p.raiz}<br>
+  <em>Fortaleza:</em> ${p.fort}<br>
+  <em>Riesgo:</em> ${p.riesgo}<br>
+  <em>Cómo sanar:</em><br> - ${p.sanar.join("<br> - ")}<br>
+
+  <hr>
+
+  <strong>Herida secundaria: ${secundaria}</strong><br>
+  ${s.desc}<br>
+  <em>Raíz:</em> ${s.raiz}<br>
+  <em>Fortaleza:</em> ${s.fort}<br>
+  <em>Riesgo:</em> ${s.riesgo}<br>
+
+  <hr>
+
+  <strong>💡 Interpretación profunda:</strong><br>
+  ${combinacion}<br>
+
+  <hr>
+
+  ${plan}
+  `;
+}
+
+render();
+
+// Botón compartir
+function compartir(){
+  if(navigator.share){
+    navigator.share({
+      title: 'Test de Heridas Emocionales',
+      text: 'Descubre tu herida emocional con este test',
+      url: window.location.href
+    });
+  } else {
+    alert('Copia el link para compartir');
+  }
+}
+
+</script>
+
+<div style="margin-top:20px">
+<button onclick="location.reload()">🔄 Volver a intentar</button>
+<button onclick="compartir()">📤 Compartir</button>
+</div>
+
+</body>
+</html>
